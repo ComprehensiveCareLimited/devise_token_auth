@@ -142,6 +142,11 @@ module DeviseTokenAuth::Concerns::SetUserByToken
   end
 
   def refresh_headers
+    # CHANGED: Added @resource.save to avoid the following error thrown by 
+    # @resource.with_lock block ... 
+    # "RuntimeError (Locking a record with unpersisted changes is not supported. 
+    # Use 'save' to persist the changes, or 'reload' to discard them explicitly.)"
+    @resource.save
     # Lock the user record during any auth_header updates to ensure
     # we don't have write contention from multiple threads
     @resource.with_lock do
